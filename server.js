@@ -91,7 +91,6 @@ function searchWeatherData(request, response) {
   
         //For each entry within dailyData array
         //Create new weather object
-        new WeatherData(summary, time);
         return new WeatherData(summary, time);
       });
       response.send(dailyWeather);
