@@ -12,7 +12,7 @@ const cors = require('cors');
 const superagent = require('superagent');
 const pg = require('pg');
 
-//postgrest client
+//postgres client
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('error', error => console.error(error))
@@ -31,6 +31,13 @@ app.use('*', (request, response) => {
   response.send('Our server runs.');
 })
 
+//sql commands 
+const SQL_CMDS = {};
+SQL_CMDS.getLocation = 'SELECT * FROM locations WHERE search_query=$1'
+SQL_CMDS.insertLocation = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4)'
+SQL_CMDS.getWeather = 'SELECT * FROM weathers WHERE location_id=$1'
+SQL_CMDS.insertWeather = 'INSERT INTO weathers (forecast, wtime, location_id) VALUES ($1, $2, $3)'
+
 //Constructor Functions
 function LocationData(search_query, formatted_query, latitude, longitude){
   this.search_query = search_query;
@@ -39,9 +46,9 @@ function LocationData(search_query, formatted_query, latitude, longitude){
   this.longitude = longitude;
 }
 
-function WeatherData(summary, time){
+function WeatherData(summary, wtime){
   this.forecast = summary;
-  this.time = time;
+  this.wtime = wtime;
 }
 
 //Other Functions
@@ -50,16 +57,13 @@ function searchLocationData(request, response) {
   //user input - ex: if they type in Seattle...search_quer = Seattle
   const search_query = request.query.data;
   const URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${search_query}&key=${process.env.GEOCODE_API_KEY}`;
-  //grabLocationData = Full JSON file
 
-  // const grabLocationData = require('./data/geo.json');
   superagent.get(URL).then(result => {
     if(result.body.status === 'ZERO_RESULTS'){
       response.status(500).send('Sorry, something went wrong');
       return;
     }
     const searchedResult = result.body.results[0];
-    //formatted_query = "Lynnwood, WA, USA"
     const formatted_query = searchedResult.formatted_address;
 
     const latitude = searchedResult.geometry.location.lat;
@@ -84,16 +88,19 @@ function searchWeatherData(request, response) {
         //summary = "Foggy in the morning."
         let summary = dailyDataObj.summary;
         //time = 1540018800; converted to standart time
-        let time = new Date(dailyDataObj.time * 1000).toString().slice(0, 15) ;
+        let wtime = new Date(dailyDataObj.time * 1000).toString().slice(0, 15) ;
   
         //For each entry within dailyData array
         //Create new weather object
-        return new WeatherData(summary, time);
+        return new WeatherData(summary, wtime);
       });
       response.send(dailyWeather);
     }
   })
 }
+
+// TODO: insert meetups here //
+
 
 
 // server start
