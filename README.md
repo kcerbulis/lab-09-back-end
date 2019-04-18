@@ -1,7 +1,7 @@
 # lab-06-back-end
 
-**Author**: Melissa Stock, Pratiibh Bassi
-**Version**: 0.0.1
+**Author**: Melissa Stock, Pratiibh Bassi, Denevan Pettie, Joseph Hangarter, Jon Ramer
+**Version**: 0.0.3
 
 ## Overview
 <p>This app will request data from different APIs, search the data for requested information, and return it the the user. Information includes weather, movies, restaurants, and maps.</p>
@@ -58,10 +58,20 @@ Use this area to document the iterative changes made to your application as each
 
 04-17-2019 01:00pm - Updated READme
 
+04-18-2019 09:30am - Connected postgres to our server
+
+04-18-2019 10:30am - Finished code review
+
+04-18-2019 11:30am - Added database, storing and removing information
+
+04-18-2019 12:25pm - Check database and use existing information
+
+04-18-2019 12:30pm - Updated readme and deployed site
+
+
+
 ## Credits and Collaborations
 
-Joseph Hangarter - Day 2 Navigator:  Features #1 & #2
-
-TA - Jeniffer Piper and Crhis Chapman
+TA - Jeniffer Piper and Chris Chapman
 
 Instructor - Nicholas Carignan
