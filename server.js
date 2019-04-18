@@ -67,8 +67,7 @@ function searchLocationData(request, response) {
 
     //Create new object containing user input data
     //responseDataObject = {Seattle, Lynnwood, WA, USA, somenumber, somenumber}
-    responseDataObject = new LocationData(search_query, formatted_query, latitude, longitude);
-    response.send(responseDataObject);
+    response.send(new LocationData(search_query, formatted_query, latitude, longitude));
   });
 
 }
