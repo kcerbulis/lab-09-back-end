@@ -12,8 +12,6 @@ const cors = require('cors');
 const superagent = require('superagent');
 const pg = require('pg');
 
-let responseDataObject = {};
-
 //postgrest client
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
