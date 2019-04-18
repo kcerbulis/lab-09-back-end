@@ -36,7 +36,7 @@ const SQL_CMDS = {};
 SQL_CMDS.getLocation = 'SELECT * FROM locations WHERE search_query=$1'
 SQL_CMDS.insertLocation = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4)'
 SQL_CMDS.getWeather = 'SELECT * FROM weathers WHERE location_id=$1'
-SQL_CMDS.insertWeather = 'INSERT INTO weathers (forecast, wtime, location_id) VALUES ($1, $2, $3)'
+SQL_CMDS.insertWeather = 'INSERT INTO weathers (forecast, time, location_id) VALUES ($1, $2, $3)'
 
 //Constructor Functions
 function LocationData(search_query, formatted_query, latitude, longitude){
@@ -46,9 +46,9 @@ function LocationData(search_query, formatted_query, latitude, longitude){
   this.longitude = longitude;
 }
 
-function WeatherData(summary, wtime){
+function WeatherData(summary, time){
   this.forecast = summary;
-  this.wtime = wtime;
+  this.time = time;
 }
 
 //Other Functions
@@ -56,24 +56,33 @@ function searchLocationData(request, response) {
 
   //user input - ex: if they type in Seattle...search_quer = Seattle
   const search_query = request.query.data;
-  const URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${search_query}&key=${process.env.GEOCODE_API_KEY}`;
+  client.query(SQL_CMDS.getLocation, [search_query]).then(result => {
+    if(result.rows.length) {
+      response.send(result.rows[0])
+    } else {
+      const URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${search_query}&key=${process.env.GEOCODE_API_KEY}`;
 
-  superagent.get(URL).then(result => {
-    if(result.body.status === 'ZERO_RESULTS'){
-      response.status(500).send('Sorry, something went wrong');
-      return;
+      superagent.get(URL).then(result => {
+        if(result.body.status === 'ZERO_RESULTS'){
+          response.status(500).send('Sorry, something went wrong');
+          return;
+        }
+        const searchedResult = result.body.results[0];
+        const formatted_query = searchedResult.formatted_address;
+
+        const latitude = searchedResult.geometry.location.lat;
+        const longitude = searchedResult.geometry.location.lng;
+        const responseDataObject = new LocationData(search_query, formatted_query, latitude, longitude);
+
+        client.query(SQL_CMDS.insertLocation, [responseDataObject.search_query, responseDataObject.formatted_query, responseDataObject.latitude, responseDataObject.longitude]);
+
+        //Create new object containing user input data
+        //responseDataObject = {Seattle, Lynnwood, WA, USA, somenumber, somenumber}
+        
+        response.send(responseDataObject);
+      })
     }
-    const searchedResult = result.body.results[0];
-    const formatted_query = searchedResult.formatted_address;
-
-    const latitude = searchedResult.geometry.location.lat;
-    const longitude = searchedResult.geometry.location.lng;
-
-    //Create new object containing user input data
-    //responseDataObject = {Seattle, Lynnwood, WA, USA, somenumber, somenumber}
-    response.send(new LocationData(search_query, formatted_query, latitude, longitude));
   });
-
 }
 
 function searchWeatherData(request, response) {
@@ -85,14 +94,12 @@ function searchWeatherData(request, response) {
       //dailyData = array of daily data objects
       let dailyData = result.body.daily.data;
       const dailyWeather = dailyData.map((dailyDataObj) => {
-        //summary = "Foggy in the morning."
         let summary = dailyDataObj.summary;
-        //time = 1540018800; converted to standart time
-        let wtime = new Date(dailyDataObj.time * 1000).toString().slice(0, 15) ;
+        let time = new Date(dailyDataObj.time * 1000).toString().slice(0, 15) ;
   
         //For each entry within dailyData array
         //Create new weather object
-        return new WeatherData(summary, wtime);
+        return new WeatherData(summary, time);
       });
       response.send(dailyWeather);
     }
@@ -100,7 +107,6 @@ function searchWeatherData(request, response) {
 }
 
 // TODO: insert meetups here //
-
 
 
 // server start
