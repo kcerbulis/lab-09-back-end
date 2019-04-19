@@ -1,6 +1,6 @@
 # lab-06-back-end
 
-**Author**: Melissa Stock, Pratiibh Bassi, Denevan Pettie, Joseph Hangarter, Jon Ramer
+**Author**: Melissa Stock, Pratiibh Bassi, Denevan Pettie, Joseph Hangarter, Jon Ramer, Krisjanis Cerbulis
 **Version**: 0.0.3
 
 ## Overview
@@ -67,6 +67,10 @@ Use this area to document the iterative changes made to your application as each
 04-18-2019 12:25pm - Check database and use existing information
 
 04-18-2019 12:30pm - Updated readme and deployed site
+
+04-19-2019 10:30pm - Setting up movie constructor and callback function
+
+04-19-2019 12:30pm - Updating schema.sql to account for the Movie table
 
 
 
