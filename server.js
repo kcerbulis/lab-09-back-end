@@ -27,11 +27,14 @@ app.get('/location', searchLocationData);
 
 app.get('/weather', searchWeatherData);
 
+app.get('/movies', searchMovieData);
+
+// Setting up all apps for a request response format (request, response)
 app.use('*', (request, response) => {
   response.send('Our server runs.');
 })
 
-//sql commands 
+//sql commands
 const SQL_CMDS = {};
 SQL_CMDS.getLocation = 'SELECT * FROM locations WHERE search_query=$1'
 // SQL_CMDS.getLocation = 'SELECT * FROM $1 WHERE search_query=$2'
@@ -52,12 +55,22 @@ function WeatherData(summary, time) {
   this.time = time;
 }
 
+function MovieData(info) {
+  this.title = info.title;
+  this.overview = info.overiew;
+  this.average_votes = info.average_votes;
+  this.total_votes = info.total_votes;
+  // this.image_url = `https://image.tmdb.org/t/p/original${data.poster_path}`;
+  this.popularity = info.popularity;
+  this.released_on = info.released_on;
+}
+
 //Other Functions
 function checkDatabase(search_query, response) {
 //  return client.query(SQL_CMDS.getLocation, ['locations', search_query]).then(result => {
   return client.query(SQL_CMDS.getLocation, [search_query]).then(result => {
     if (result.rows.length) {
-      console.log("checking");
+      console.log('DATABASE EXISTS');
       response.send(result.rows[0])
     } else {
       return 'NOT IN DATABASE';
@@ -105,7 +118,7 @@ function searchWeatherData(request, response) {
     if (result.body.latitude === Number(request.query.data.latitude) && result.body.longitude === Number(request.query.data.longitude)) {
       //dailyData = array of daily data objects
       let dailyData = result.body.daily.data;
-      const dailyWeather = dailyData.map((dailyDataObj) => {
+      const dailyWeather = dailyData.map(dailyDataObj => {
         let summary = dailyDataObj.summary;
         let time = new Date(dailyDataObj.time * 1000).toString().slice(0, 15);
 
@@ -117,6 +130,16 @@ function searchWeatherData(request, response) {
     }
   })
 }
+
+// Paste here
+
+
+
+
+
+
+
+
 
 // TODO: insert meetups here //
 
