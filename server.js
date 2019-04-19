@@ -27,6 +27,8 @@ app.get('/location', searchLocationData);
 
 app.get('/weather', searchWeatherData);
 
+app.get('/movies', searchMovieData);
+
 // Setting up all apps for a request response format (request, response)
 app.use('*', (request, response) => {
   response.send('Our server runs.');
@@ -51,6 +53,16 @@ function LocationData(search_query, formatted_query, latitude, longitude) {
 function WeatherData(summary, time) {
   this.forecast = summary;
   this.time = time;
+}
+
+function MovieData(info) {
+  this.title = info.title;
+  this.overview = info.overiew;
+  this.average_votes = info.average_votes;
+  this.total_votes = info.total_votes;
+  // this.image_url = `https://image.tmdb.org/t/p/original${data.poster_path}`;
+  this.popularity = info.popularity;
+  this.released_on = info.released_on;
 }
 
 //Other Functions
@@ -106,7 +118,7 @@ function searchWeatherData(request, response) {
     if (result.body.latitude === Number(request.query.data.latitude) && result.body.longitude === Number(request.query.data.longitude)) {
       //dailyData = array of daily data objects
       let dailyData = result.body.daily.data;
-      const dailyWeather = dailyData.map((dailyDataObj) => {
+      const dailyWeather = dailyData.map(dailyDataObj => {
         let summary = dailyDataObj.summary;
         let time = new Date(dailyDataObj.time * 1000).toString().slice(0, 15);
 
@@ -118,6 +130,35 @@ function searchWeatherData(request, response) {
     }
   })
 }
+
+function searchMovieData(request, response){
+  let city = request.formatted_query.split(',')[0];
+  const URL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${city}`;
+  superagent.get(URL).then(result => {
+
+    let movieInfo = result.body.data;
+    const movieDisplay = movieInfo.map(movieOutput =>{
+      let title = movieOutput.title;
+      let overview = movieOutput.overview;
+      let average_votes = movieOutput.average_votes;
+      let total_votes = movieOutput.total_votes;
+      // Insert image URL here
+      let popularity = movieOutput.popularity;
+      let released_on = movieOutput.released_on;
+      return new MovieData(title, overview, average_votes, total_votes, popularity, released_on);
+    });
+
+    response.send(movieDisplay);
+  })
+}
+
+
+
+
+
+
+
+
 
 // TODO: insert meetups here //
 
