@@ -34,7 +34,8 @@ app.use('*', (request, response) => {
 
 //sql commands
 const SQL_CMDS = {};
-SQL_CMDS.getLocation = 'SELECT * FROM $1 WHERE search_query=$2'
+SQL_CMDS.getLocation = 'SELECT * FROM locations WHERE search_query=$1'
+// SQL_CMDS.getLocation = 'SELECT * FROM $1 WHERE search_query=$2'
 SQL_CMDS.insertLocation = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4)'
 SQL_CMDS.getWeather = 'SELECT * FROM weathers WHERE location_id=$1'
 SQL_CMDS.insertWeather = 'INSERT INTO weathers (forecast, time, location_id) VALUES ($1, $2, $3)'
@@ -57,7 +58,7 @@ function checkDatabase(search_query, response) {
 //  return client.query(SQL_CMDS.getLocation, ['locations', search_query]).then(result => {
   return client.query(SQL_CMDS.getLocation, [search_query]).then(result => {
     if (result.rows.length) {
-      console.log('checking');
+      console.log('DATABASE EXISTS');
       response.send(result.rows[0])
     } else {
       return 'NOT IN DATABASE';
