@@ -31,7 +31,7 @@ app.use('*', (request, response) => {
   response.send('Our server runs.');
 })
 
-//sql commands 
+//sql commands
 const SQL_CMDS = {};
 SQL_CMDS.getLocation = 'SELECT * FROM locations WHERE search_query=$1'
 // SQL_CMDS.getLocation = 'SELECT * FROM $1 WHERE search_query=$2'
@@ -57,7 +57,7 @@ function checkDatabase(search_query, response) {
 //  return client.query(SQL_CMDS.getLocation, ['locations', search_query]).then(result => {
   return client.query(SQL_CMDS.getLocation, [search_query]).then(result => {
     if (result.rows.length) {
-      console.log("checking");
+      console.log('checking');
       response.send(result.rows[0])
     } else {
       return 'NOT IN DATABASE';
