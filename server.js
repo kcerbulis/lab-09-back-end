@@ -27,15 +27,14 @@ app.get('/location', searchLocationData);
 
 app.get('/weather', searchWeatherData);
 
-// Setting up all apps for a request response format
+// Setting up all apps for a request response format (request, response)
 app.use('*', (request, response) => {
   response.send('Our server runs.');
 })
 
 //sql commands
 const SQL_CMDS = {};
-SQL_CMDS.getLocation = 'SELECT * FROM locations WHERE search_query=$1'
-// SQL_CMDS.getLocation = 'SELECT * FROM $1 WHERE search_query=$2'
+SQL_CMDS.getLocation = 'SELECT * FROM $1 WHERE search_query=$2'
 SQL_CMDS.insertLocation = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4)'
 SQL_CMDS.getWeather = 'SELECT * FROM weathers WHERE location_id=$1'
 SQL_CMDS.insertWeather = 'INSERT INTO weathers (forecast, time, location_id) VALUES ($1, $2, $3)'
