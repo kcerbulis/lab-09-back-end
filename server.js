@@ -131,26 +131,7 @@ function searchWeatherData(request, response) {
   })
 }
 
-function searchMovieData(request, response){
-  let city = request.formatted_query.split(',')[0];
-  const URL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${city}`;
-  superagent.get(URL).then(result => {
-
-    let movieInfo = result.body.data;
-    const movieDisplay = movieInfo.map(movieOutput =>{
-      let title = movieOutput.title;
-      let overview = movieOutput.overview;
-      let average_votes = movieOutput.average_votes;
-      let total_votes = movieOutput.total_votes;
-      // Insert image URL here
-      let popularity = movieOutput.popularity;
-      let released_on = movieOutput.released_on;
-      return new MovieData(title, overview, average_votes, total_votes, popularity, released_on);
-    });
-
-    response.send(movieDisplay);
-  })
-}
+// Paste here
 
 
 
