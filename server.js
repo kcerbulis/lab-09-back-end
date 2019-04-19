@@ -27,6 +27,7 @@ app.get('/location', searchLocationData);
 
 app.get('/weather', searchWeatherData);
 
+// Setting up all apps for a request response format
 app.use('*', (request, response) => {
   response.send('Our server runs.');
 })
