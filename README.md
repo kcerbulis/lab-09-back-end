@@ -76,6 +76,6 @@ Use this area to document the iterative changes made to your application as each
 
 ## Credits and Collaborations
 
-TA - Jeniffer Piper and Chris Chapman
+TA's - Jeniffer Piper and Chris Chapman
 
-Instructor - Nicholas Carignan
+Instructor: Nicholas Carignan
