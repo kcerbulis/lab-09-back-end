@@ -1,4 +1,4 @@
-# lab-06-back-end
+# City Explorer
 
 **Author**: Melissa Stock, Pratiibh Bassi, Denevan Pettie, Joseph Hangarter, Jon Ramer, Krisjanis Cerbulis
 **Version**: 0.0.3
